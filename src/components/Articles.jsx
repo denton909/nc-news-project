@@ -1,15 +1,16 @@
 import {useEffect, useState } from "react"
 import { getArticles } from '../api'
+import { useNavigate } from "react-router-dom"
 
 const Articles = () => {
     
     const [articlesList, setArticlesList] = useState([])
     const [sortBy, setSortBy] = useState('')
     const [orderBy, setOrderBy] = useState('')
-    const [loading, setLoading] = useState(false); 
-    
+    const [loading, setLoading] = useState(true); 
+    const navigate = useNavigate()
     useEffect(()=>{
-        setLoading(true); 
+        
         getArticles(sortBy, orderBy).then((res)=>{
             
             setArticlesList(res.articles)
@@ -27,7 +28,7 @@ function handleOrderBy(e) {
 }
 
 function handleClick(e, value) {
-    console.log(value)
+    navigate(`/api/articles/${value}`)
     
 }
 
@@ -62,7 +63,7 @@ if(loading){
                 <p>Topic: {article.topic}</p>
                 <p>Votes: {article.votes}</p>
                 <p>Number of Comments: {article.comment_count}</p>
-                
+                <button onClick={(e) => handleClick(e, article.article_id)} id="readButton">Read Article</button>
                 </div>
         })
         } 
