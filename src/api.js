@@ -10,10 +10,10 @@ export const getUsers = () => {
 export const getArticles = (sortby, orderby) => {
   
   const params = {
-    // topic: topic|| undefined,
+   
     sortBy: sortby|| undefined,
     orderBy: orderby || undefined,
-    // author: author || undefined
+    
   }
 
 
