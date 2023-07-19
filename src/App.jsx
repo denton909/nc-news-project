@@ -22,7 +22,7 @@ const [articleId, setArticleId] = useState([])
       <Header getUser={getUser} setGetUser={setGetUser}></Header> 
       <Routes>
       <Route path='/' element={<Articles articleId={articleId} setArticleId={setArticleId} />} />
-      <Route path='/articles/:articleId' element={<Article />} />
+      <Route path='/articles/:articleId' element={<Article getUser={getUser}/>} />
       </Routes> 
 
     </main>

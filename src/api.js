@@ -24,3 +24,9 @@ export const getArticlesById = (id) => {
     return article.data
     })
 }
+
+export const getComments = (id) => {
+  return axios.get(`https://nc-news-fnav.onrender.com/api/articles/${id}/comments`).then((comments)=>{
+    return comments.data
+    })
+}

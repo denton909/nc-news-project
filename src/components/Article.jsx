@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react"
-import { getArticlesById, getUsers } from "../api"
+import { getArticlesById, getComments, getUsers } from "../api"
 import { useParams } from "react-router-dom"
 
-const Article = () => {
+const Article = (props) => {
     const [getArticle, setGetArticle] = useState([])
     const [authors, setAuthors] = useState([])
     const [authorImg, setAuthorImg] = useState('')
     const {articleId} = useParams()
     const [loading, setLoading] = useState(true); 
+    const [commentsList, setCommentsList] = useState([])
     
     useEffect(()=> {
         getUsers().then((res) => {
@@ -17,8 +18,12 @@ const Article = () => {
         .then((res)=>{
             getAuthorImg()
             setGetArticle(res.article)
+           return getComments(articleId)
+        }).then((response) =>{
+            
+            setCommentsList(response.comments)
             setLoading(false);
-        }).catch()
+        })
     }, [])
 
 function getAuthorImg () {
@@ -34,8 +39,8 @@ if(loading){
 
 
 
-        return <section>
-            <div id="article">
+        return <main>
+            <section id="article">
             <h2 id="articleTitle">{getArticle.title}</h2>
             <div id="articleInfo">
             <div id="votes">
@@ -56,8 +61,20 @@ if(loading){
 
             <p id="createdAt"> Created at: {getArticle.created_at}</p>
             </div>
-            </div>
-        </section>
+            <h3 id="commentHeader">Comments</h3>
+            <section id="comments">
+                <div id="addCommentsWrapper">
+                    <div id="authorContainer">
+                <img id="authorAvatar" src={props.getUser.avatar_url}></img>
+                 <p id="author"> Username: {props.getUser.username}</p>
+                    </div>
+                </div>
+                <li id="comments list">
+
+                </li>
+            </section>
+            </section>
+        </main>
      }
 }
 
