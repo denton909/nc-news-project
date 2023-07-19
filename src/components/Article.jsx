@@ -33,6 +33,8 @@ function getAuthorImg () {
         }
     })
 }
+
+console.log(commentsList)
 if(loading){
     return <h2 id="loading">Page is loading please wait</h2>
  } else {
@@ -62,17 +64,37 @@ if(loading){
             <p id="createdAt"> Created at: {getArticle.created_at}</p>
             </div>
             <h3 id="commentHeader">Comments</h3>
-            <section id="comments">
-                <div id="addCommentsWrapper">
-                    <div id="authorContainer">
-                <img id="authorAvatar" src={props.getUser.avatar_url}></img>
-                 <p id="author"> Username: {props.getUser.username}</p>
+            <section id="addComments">
+                    <div id="UserContainer">
+                        {
+                            props.getUser.username ? <img id="userAvatar" src={props.getUser.avatar_url}></img> : null
+                        }
+                        {
+                            props.getUser.username ?  <p id="username2"> Username: {props.getUser.username}</p> : <p id="noUsername"> Please choose a user to be able to make a comment</p>
+                        }
+               
                     </div>
-                </div>
-                <li id="comments list">
-
-                </li>
+                <label id="commentLable" htmlFor="commentArea">Comment Below</label>
+                <textarea id="commentArea"></textarea>
+               <button className="commentSubmitButton">Submit Comment</button>
             </section>
+                <div id="comments">
+                       { 
+                            commentsList.map(comment => {
+                                return <ul className="comment">
+                                    <label className="commentLables" htmlFor="commentId">Comment ID</label>
+                                    <p className="commentText">{comment.comment_id} </p>
+                                    <label className="commentLables" htmlFor="commentAuthor">Author</label>
+                                    <p className="commentText">{comment.author}</p>
+                                    <label className="commentLables" htmlFor="commentBody">Comment</label>
+                                    <p className="commentText">{comment.body}</p>
+                                    <label className="commentLables" htmlFor="createdAt">Date Created</label>
+                                    <p id="createdAt">{comment.created_at}</p>
+                                    <hr id="line"></hr>
+                                </ul>
+                            })
+                       }
+                </div>
             </section>
         </main>
      }

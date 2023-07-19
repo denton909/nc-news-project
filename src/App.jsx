@@ -13,7 +13,7 @@ function App() {
     username: undefined
 }
 const [getUser, setGetUser] =useState(noUserSelected)
-
+console.log(getUser)
 const [articleId, setArticleId] = useState([])
 
 
