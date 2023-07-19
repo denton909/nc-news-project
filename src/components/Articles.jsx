@@ -1,8 +1,9 @@
 import {useEffect, useState } from "react"
 import { getArticles } from '../api'
 import { useNavigate } from "react-router-dom"
+import Article from "./Article"
 
-const Articles = () => {
+const Articles = (props) => {
     
     const [articlesList, setArticlesList] = useState([])
     const [sortBy, setSortBy] = useState('')
@@ -10,9 +11,7 @@ const Articles = () => {
     const [loading, setLoading] = useState(true); 
     const navigate = useNavigate()
     useEffect(()=>{
-        
         getArticles(sortBy, orderBy).then((res)=>{
-            
             setArticlesList(res.articles)
             setLoading(false);
         })
@@ -28,10 +27,9 @@ function handleOrderBy(e) {
 }
 
 function handleClick(e, value) {
-    navigate(`/api/articles/${value}`)
-    
+    props.setArticleId(value)
+    navigate(`/articles/${value}`)
 }
-
 
 if(loading){
    return <h2 id="loading">Page is loading please wait</h2>
