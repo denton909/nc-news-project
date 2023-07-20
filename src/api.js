@@ -60,13 +60,3 @@ export const postComments = (id, newComment) => {
 
 
 
-export const patchVotes = (articleId) => {
-  
-  const body = {
-    "inc_votes": 1
-  }
-
-  return axios.patch(`https://nc-news-fnav.onrender.com/api/articles/${id}`, body).then((res) => {
-    return res.data
-  })
-}
