@@ -48,10 +48,10 @@ export const deleteComment = (commentId) => {
   })
 }
 
-export const patchVotes = (id) => {
+export const patchVotes = (id, vote) => {
   
   const body = {
-    "inc_votes": 1
+    "inc_votes": vote
   }
 
   return axios.patch(`https://nc-news-fnav.onrender.com/api/articles/${id}`, body).then((res) => {
