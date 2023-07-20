@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { deleteComment, getArticlesById, getComments, getUsers, postComments } from "../api"
+import { deleteComment, getArticlesById, getComments, getUsers, patchVotes, postComments } from "../api"
 import { useParams } from "react-router-dom"
 
 const Article = (props) => {
@@ -74,6 +74,7 @@ const loadingComment = {
 setTextArea('')
 setComment('')
 setCommentsList([loadingComment, ...commentsList])
+
 postComments(articleId, commentToPost).then((newComment)=> {
     
     setCommentsList([newComment, ...commentsList])
@@ -117,6 +118,12 @@ function handleDelete (e) {
     })
 }
 
+function hanldeVoteIncrease (e) {
+    console.log(Number(e.target.value) + 1)
+    patchVotes(articleId).then((res) => {
+        console.log(res)
+    })
+}
 
 if(loading){
     return <h2 id="loading">Page is loading please wait</h2>
@@ -133,7 +140,7 @@ if(loading){
             <div id="articleInfo">
             <div id="votes">
             <p id="voteCount" > Votes: {getArticle.votes}</p>
-            <button id="thumbsUp" >👍</button>
+            <button onClick={hanldeVoteIncrease} value={getArticle.votes} id="thumbsUp" >👍</button>
             <button id="thumbsDown" >👎</button>
             </div>
             <div id="authorContainer">
