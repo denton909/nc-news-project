@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { deleteComment, getArticlesById, getComments, getUsers, postComments } from "../api"
+import { deleteComment, getArticlesById, getComments, getUsers, patchVotes, postComments } from "../api"
 import { useParams } from "react-router-dom"
 
 const Article = (props) => {
@@ -11,6 +11,7 @@ const Article = (props) => {
     const [commentsList, setCommentsList] = useState([])
     const [comment, setComment] = useState('')
     const [badRequest, setBadRequest] = useState('')
+    const [networkError, setNetworkError] = useState('')
    
     const [textArea, setTextArea] = useState('')
     useEffect(()=> {
@@ -73,10 +74,16 @@ const loadingComment = {
 setTextArea('')
 setComment('')
 setCommentsList([loadingComment, ...commentsList])
+
 postComments(articleId, commentToPost).then((newComment)=> {
-    console.log()
+    
     setCommentsList([newComment, ...commentsList])
     
+}).catch((err) => {
+    if(err.code === "ERR_NETWORK"){
+
+        setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
+    }
 })
 }
 
@@ -90,13 +97,40 @@ function handleCommentSubmitButtonDisable () {
         }
 }
 
+function handleDelete (e) {
+    
+    const commentsListFilter = commentsList.filter(comment => {
+        if (comment.comment_id !== Number(e.target.value)){
+            return comment
+        } else {
+            return false
+        }
+    } )
+    setCommentsList(commentsListFilter)
+    
+    deleteComment(e.target.value).then((res) => {
 
+    }).catch((error)=>{
+        if(error.code === "ERR_NETWORK"){
 
+            setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
+        }
+    })
+}
+
+function hanldeVoteIncrease (e) {
+    console.log(Number(e.target.value) + 1)
+    patchVotes(articleId).then((res) => {
+        console.log(res)
+    })
+}
 
 if(loading){
     return <h2 id="loading">Page is loading please wait</h2>
  } else if(badRequest) {
     return <h2 id="loading">{badRequest}</h2>
+ } else if(networkError){
+    return <h2 id="loading">{networkError}</h2>
  }
   else {
 
@@ -106,7 +140,7 @@ if(loading){
             <div id="articleInfo">
             <div id="votes">
             <p id="voteCount" > Votes: {getArticle.votes}</p>
-            <button id="thumbsUp" >👍</button>
+            <button onClick={hanldeVoteIncrease} value={getArticle.votes} id="thumbsUp" >👍</button>
             <button id="thumbsDown" >👎</button>
             </div>
             <div id="authorContainer">
@@ -142,14 +176,14 @@ if(loading){
                             commentsList.map(comment => {
                                 return <div key={comment.comment_id} className="comment">
                                     <p className="commentLables" htmlFor="commentId">Comment ID</p>
-                                    <p className="commentText" value={comment.comment_id}>{comment.comment_id} </p>
+                                    <p className="commentText" >{comment.comment_id} </p>
                                     <p className="commentLables" htmlFor="commentAuthor">Author</p>
                                     <p className="commentText">{comment.author}</p>
                                     <p className="commentLables" htmlFor="commentBody">Comment</p>
                                     <p className="commentText">{comment.body}</p>
                                     <p className="commentLables" htmlFor="createdAt">Date Created</p>
                                     <p id="createdAt">{comment.created_at}</p>
-                                    <button disabled={disableButton(comment.author)} >Delete Comment</button>
+                                    <button disabled={disableButton(comment.author)} value={comment.comment_id} onClick={handleDelete}   >Delete Comment</button>
                                     <hr id="line"></hr>
                                 </div>
                             })

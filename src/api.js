@@ -42,21 +42,19 @@ export const postComments = (id, newComment) => {
     })
 }
 
+export const deleteComment = (commentId) => {
+  return axios.delete(`https://nc-news-fnav.onrender.com/api/comments/${commentId}`).then((res) => {
+    return res.status
+  })
+}
 
+export const patchVotes = (id) => {
+  
+  const body = {
+    "inc_votes": 1
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return axios.patch(`https://nc-news-fnav.onrender.com/api/articles/${id}`, body).then((res) => {
+    return res.data
+  })
+}
