@@ -30,3 +30,14 @@ export const getComments = (id) => {
     return comments.data
     })
 }
+
+export const postComments = (id, newComment) => {
+  const body = {
+    username: newComment.username,
+    body: newComment.body
+  }
+
+  return axios.post(`https://nc-news-fnav.onrender.com/api/articles/${id}/comments`, body).then((res)=>{
+    return res.data
+    })
+}

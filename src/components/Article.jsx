@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getArticlesById, getComments, getUsers } from "../api"
+import { getArticlesById, getComments, getUsers, postComments } from "../api"
 import { useParams } from "react-router-dom"
 
 const Article = (props) => {
@@ -9,7 +9,9 @@ const Article = (props) => {
     const {articleId} = useParams()
     const [loading, setLoading] = useState(true); 
     const [commentsList, setCommentsList] = useState([])
-    
+    const [comment, setComment] = useState('')
+   
+    const [textArea, setTextArea] = useState('')
     useEffect(()=> {
         getUsers().then((res) => {
             setAuthors(res.users)
@@ -33,6 +35,56 @@ function getAuthorImg () {
         }
     })
 }
+
+function disableButton (author) {
+    if(author === props.getUser.username){
+        return false
+    } else {
+        return true
+    }
+
+}
+
+function handleComment (e) {
+    setComment(e.target.value)
+    setTextArea(e.target.value)
+}
+
+function handleCommentSubmit (e) {
+e.preventDefault
+const commentToPost = {
+    username: props.getUser.username,
+    body: comment
+}
+const loadingComment = {
+    comment_id: 'Is Loading',
+    body: 'Is Loading',
+    author: props.getUser.username,
+    votes: 'Is Loading',
+    created_at: 'Is Loading'
+    
+}
+setTextArea('')
+setComment('')
+setCommentsList([loadingComment, ...commentsList])
+postComments(articleId, commentToPost).then((newComment)=> {
+    
+    setCommentsList([newComment, ...commentsList])
+    
+})
+}
+
+
+
+function handleCommentSubmitButtonDisable () {   
+        if (props.getUser.username && comment.length > 0) {
+            return false
+        } else {
+            return true
+        }
+}
+
+
 if(loading){
     return <h2 id="loading">Page is loading please wait</h2>
  } else {
@@ -62,17 +114,41 @@ if(loading){
             <p id="createdAt"> Created at: {getArticle.created_at}</p>
             </div>
             <h3 id="commentHeader">Comments</h3>
-            <section id="comments">
-                <div id="addCommentsWrapper">
-                    <div id="authorContainer">
-                <img id="authorAvatar" src={props.getUser.avatar_url}></img>
-                 <p id="author"> Username: {props.getUser.username}</p>
+            <section id="addComments">
+                    <div id="UserContainer">
+                        {
+                            props.getUser.username ? <img id="userAvatar" src={props.getUser.avatar_url}></img> : null
+                        }
+                        {
+                            props.getUser.username ?  <p id="username2"> Username: {props.getUser.username}</p> : <p id="noUsername"> Please choose a user to be able to make a comment</p>
+                        }
+               
                     </div>
-                </div>
-                <li id="comments list">
-
-                </li>
+                <label id="commentLable" htmlFor="commentArea">Comment Below</label>
+                <textarea value={textArea} onChange={handleComment} id="commentArea"></textarea>
+               <button disabled={handleCommentSubmitButtonDisable()} onClick={handleCommentSubmit} className="commentSubmitButton">Submit Comment</button>
             </section>
+                <div id="comments">
+                       { 
+                            commentsList.map(comment => {
+                                return <div key={comment.comment_id} className="comment">
+                                    <p className="commentLables" htmlFor="commentId">Comment ID</p>
+                                    <p className="commentText">{comment.comment_id} </p>
+                                    <p className="commentLables" htmlFor="commentAuthor">Author</p>
+                                    <p className="commentText">{comment.author}</p>
+                                    <p className="commentLables" htmlFor="commentBody">Comment</p>
+                                    <p className="commentText">{comment.body}</p>
+                                    <p className="commentLables" htmlFor="createdAt">Date Created</p>
+                                    <p id="createdAt">{comment.created_at}</p>
+                                    <button disabled={disableButton(comment.author)}>Delete Comment</button>
+                                    <hr id="line"></hr>
+                                </div>
+                            })
+                       }
+                       {
+                        
+                       }
+                </div>
             </section>
         </main>
      }
