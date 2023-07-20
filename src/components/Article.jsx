@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getArticlesById, getComments, getUsers, postComments } from "../api"
+import { deleteComment, getArticlesById, getComments, getUsers, postComments } from "../api"
 import { useParams } from "react-router-dom"
 
 const Article = (props) => {
@@ -10,6 +10,7 @@ const Article = (props) => {
     const [loading, setLoading] = useState(true); 
     const [commentsList, setCommentsList] = useState([])
     const [comment, setComment] = useState('')
+    const [badRequest, setBadRequest] = useState('')
    
     const [textArea, setTextArea] = useState('')
     useEffect(()=> {
@@ -25,6 +26,11 @@ const Article = (props) => {
             
             setCommentsList(response.comments)
             setLoading(false);
+        }).catch((err)=>{
+            
+            if(err.code === 'ERR_BAD_REQUEST')
+            setLoading(false)
+            setBadRequest('This article does not exist. Please return to the home page to select another article')
         })
     }, [])
 
@@ -85,11 +91,14 @@ function handleCommentSubmitButtonDisable () {
 }
 
 
+
+
 if(loading){
     return <h2 id="loading">Page is loading please wait</h2>
- } else {
-
-
+ } else if(badRequest) {
+    return <h2 id="loading">{badRequest}</h2>
+ }
+  else {
 
         return <main>
             <section id="article">
@@ -133,14 +142,14 @@ if(loading){
                             commentsList.map(comment => {
                                 return <div key={comment.comment_id} className="comment">
                                     <p className="commentLables" htmlFor="commentId">Comment ID</p>
-                                    <p className="commentText">{comment.comment_id} </p>
+                                    <p className="commentText" value={comment.comment_id}>{comment.comment_id} </p>
                                     <p className="commentLables" htmlFor="commentAuthor">Author</p>
                                     <p className="commentText">{comment.author}</p>
                                     <p className="commentLables" htmlFor="commentBody">Comment</p>
                                     <p className="commentText">{comment.body}</p>
                                     <p className="commentLables" htmlFor="createdAt">Date Created</p>
                                     <p id="createdAt">{comment.created_at}</p>
-                                    <button disabled={disableButton(comment.author)}>Delete Comment</button>
+                                    <button disabled={disableButton(comment.author)} >Delete Comment</button>
                                     <hr id="line"></hr>
                                 </div>
                             })
