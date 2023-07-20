@@ -68,7 +68,7 @@ setTextArea('')
 setComment('')
 setCommentsList([loadingComment, ...commentsList])
 postComments(articleId, commentToPost).then((newComment)=> {
-    
+    console.log()
     setCommentsList([newComment, ...commentsList])
     
 })
