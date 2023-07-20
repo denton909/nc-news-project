@@ -42,3 +42,8 @@ export const postComments = (id, newComment) => {
     })
 }
 
+export const deleteComment = (commentId) => {
+  return axios.delete(`https://nc-news-fnav.onrender.com/api/comments/${commentId}`).then((res) => {
+    return res.status
+  })
+}
