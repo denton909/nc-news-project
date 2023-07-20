@@ -15,6 +15,7 @@ const Article = (props) => {
     const [votes, setVotes] = useState('')
     const [increaseVoteButton, setIncreaseVoteButton] = useState(false)
     const [decreaseVoteButton, setDecreaseVoteButton] = useState(false)
+    
    
     const [textArea, setTextArea] = useState('')
     useEffect(()=> {
@@ -127,12 +128,9 @@ function handleVoteIncrease (e) {
     setVotes(Number(votes) + 1)
     setDecreaseVoteButton(false)
     patchVotes(articleId, 1).then((res) => {
-       
-        
+        setIncreaseVoteButton(false)
     }).catch((error)=> {
-       
         if(error.code === "ERR_NETWORK"){
-
             setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
         }
     })
@@ -143,15 +141,15 @@ function handleVoteDecrease (e) {
     setVotes(Number(votes) - 1)
     setIncreaseVoteButton(false)
     patchVotes(articleId, -1).then((res) => {
-        
+        setDecreaseVoteButton(false)
     }).catch((error)=> {
-        
         if(error.code === "ERR_NETWORK"){
-
             setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
         }
     })
 }
+
+
 
 
 
@@ -172,8 +170,8 @@ if(loading){
             <div id="articleInfo">
             <div id="votes">
             <p id="voteCount" > Votes: {votes}</p>
-            <button disabled={increaseVoteButton} onClick={handleVoteIncrease} value={getArticle.votes} id="thumbsUp" >👍</button>
-            <button disabled={decreaseVoteButton} onClick={handleVoteDecrease} value={getArticle.votes} id="thumbsDown" >👎</button>
+            <button disabled={increaseVoteButton} onClick={handleVoteIncrease} value={'increase'} id="thumbsUp" >👍</button>
+            <button disabled={decreaseVoteButton} onClick={handleVoteDecrease} value={'decrease'} id="thumbsDown" >👎</button>
             </div>
             <div id="authorContainer">
 
