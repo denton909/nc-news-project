@@ -21,6 +21,7 @@ const Article = (props) => {
     useEffect(()=> {
         getUsers().then((res) => {
             setAuthors(res.users)
+            
            return getArticlesById(articleId)
         })
         .then((res)=>{

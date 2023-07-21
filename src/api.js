@@ -7,8 +7,10 @@ export const getUsers = () => {
     .catch()
 }
 
-export const getArticles = (sortby, orderby) => {
+export const getArticles = (sortby, orderby, topic) => {
+  
   const params = {
+    topic: topic || undefined,
     sortBy: sortby|| undefined,
     orderBy: orderby || undefined,
   }
@@ -57,4 +59,10 @@ export const patchVotes = (id, vote) => {
   return axios.patch(`https://nc-news-fnav.onrender.com/api/articles/${id}`, body).then((res) => {
     return res.data
   })
+}
+
+export const getTopics = () => {
+  return axios.get('https://nc-news-fnav.onrender.com/api/topics').then((topic)=> {
+        return topic.data
+    })
 }

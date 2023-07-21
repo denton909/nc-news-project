@@ -1,30 +1,63 @@
 import {useEffect, useState } from "react"
 import { getArticles } from '../api'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import Article from "./Article"
 
 const Articles = (props) => {
-    
+    const {topics} = useParams()
     const [articlesList, setArticlesList] = useState([])
-    const [sortBy, setSortBy] = useState('')
-    const [orderBy, setOrderBy] = useState('')
     const [loading, setLoading] = useState(true); 
-    const navigate = useNavigate()
+    const [badRequest, setBadRequest] = useState('')
+    const [networkError, setNetworkError] = useState('')
+    const [searchParams, setSearchParams] = useSearchParams()
+    const sortByQuery = searchParams.get('sort_by');
+    const orderQuery = searchParams.get('order');
+    const navigate = useNavigate()  
+    
     useEffect(()=>{
-        getArticles(sortBy, orderBy).then((res)=>{
+        setNetworkError('')      
+        getArticles( sortByQuery , orderQuery, topics).then((res)=>{
             setArticlesList(res.articles)
             setLoading(false);
+        }).catch((err)=>{
+            console.log(err.code)
+            if(err.code === 'ERR_BAD_REQUEST'){
+                setLoading(false)
+                setBadRequest('This page does not exist. Please return to the home page to select another article')
+            } else if(err.code === 'ERR_NETWORK'){
+                setLoading(false)
+                setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
+            }
         })
-    }, [sortBy, orderBy])
+    }, [ topics, sortByQuery, orderQuery])
 
 function handleSortBy(e) {
-    setSortBy(e.target.value)
-
+    
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sort_by', e.target.value);
+    if(e.target.value.length <= 0){
+        
+        newParams.delete('sort_by')
+    }
+    setSearchParams(newParams);
+    
+    
 }
 
 function handleOrderBy(e) {
-    setOrderBy(e.target.value)
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('order', e.target.value);
+    if(e.target.value.length <= 0){
+        
+        newParams.delete('order')
+    }
+    setSearchParams(newParams);
+   
 }
+
+
+
+
 
 function handleClick(e, value) {
     props.setArticleId(value)
@@ -33,7 +66,12 @@ function handleClick(e, value) {
 
 if(loading){
    return <h2 id="loading">Page is loading please wait</h2>
-} else {
+} else if (badRequest) {
+    return <h2 id="loading">{badRequest}</h2>
+} else if (networkError) {
+    return <h2 id="loading">{networkError}</h2>
+}
+else {
 
     return <div id="articles-container">
          <h2 id="articles"> Articles</h2>
