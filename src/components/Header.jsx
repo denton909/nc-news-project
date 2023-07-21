@@ -4,9 +4,10 @@ import { getUsers } from '../api'
 
 const Header = (props) => {
     const [userList, setUserList] = useState([])
+    
 
     useEffect(() => {
-      getUsers().then((res)=> {
+     getUsers().then((res)=> {
           setUserList(res.users)
         })
     },[])
