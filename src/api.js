@@ -8,6 +8,7 @@ export const getUsers = () => {
 }
 
 export const getArticles = (sortby, orderby, topic) => {
+  
   const params = {
     topic: topic || undefined,
     sortBy: sortby|| undefined,

@@ -6,44 +6,17 @@ import Article from "./Article"
 const Articles = (props) => {
     const {topics} = useParams()
     const [articlesList, setArticlesList] = useState([])
-    const [sortBy, setSortBy] = useState('')
-    const [orderBy, setOrderBy] = useState('')
     const [loading, setLoading] = useState(true); 
     const [badRequest, setBadRequest] = useState('')
     const [networkError, setNetworkError] = useState('')
     const [searchParams, setSearchParams] = useSearchParams()
-    const navigate = useNavigate()
-    const params = new URLSearchParams
-   
-
-     
-    useEffect(()=>{
-        setNetworkError('')
+    const sortByQuery = searchParams.get('sort_by');
+    const orderQuery = searchParams.get('order');
+    const navigate = useNavigate()  
     
-        if(sortBy.length > 0 ){
-            params.append('sort_by', sortBy)
-        } 
-        if (orderBy.length > 0 ){
-
-            params.append('order', orderBy)
-        }
-        
-        if (sortBy.length > 0 || orderBy.length > 0 ){
-            
-            setSearchParams(params)
-            console.log(searchParams.get('sort_by'), searchParams.get('order'))
-        } 
-        if(sortBy.length <= 0) {
-            params.delete('sort_by')
-            setSearchParams(params)
-        } 
-        if (orderBy.length <= 0) {
-            params.delete('order')
-            setSearchParams(params)
-        }      
-       
-
-        getArticles( sortBy , orderBy, topics).then((res)=>{
+    useEffect(()=>{
+        setNetworkError('')      
+        getArticles( sortByQuery , orderQuery, topics).then((res)=>{
             setArticlesList(res.articles)
             setLoading(false);
         }).catch((err)=>{
@@ -56,15 +29,30 @@ const Articles = (props) => {
                 setNetworkError('Network Error. Please check internet connection and then reload the page and try again')
             }
         })
-    }, [sortBy, orderBy, topics])
+    }, [ topics, sortByQuery, orderQuery])
 
 function handleSortBy(e) {
-    setSortBy(e.target.value)
+    
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('sort_by', e.target.value);
+    if(e.target.value.length <= 0){
+        
+        newParams.delete('sort_by')
+    }
+    setSearchParams(newParams);
+    
     
 }
 
 function handleOrderBy(e) {
-    setOrderBy(e.target.value)
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('order', e.target.value);
+    if(e.target.value.length <= 0){
+        
+        newParams.delete('order')
+    }
+    setSearchParams(newParams);
+   
 }
 
 
