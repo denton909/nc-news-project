@@ -9,13 +9,17 @@ import NotVaildPage from './components/NotAVaildPage'
 
 function App() {
   const noUserSelected = {
-    avatar_url: 'src/components/NC-News-2.png',
+    
+    avatar_url: 'https://d.img.vision/denton909/NC-News-2.png',
     name: 'no user',
     username: undefined
 }
-const [getUser, setGetUser] =useState(noUserSelected)
-// console.log(getUser)
+const [getUser, setGetUser] = useState(noUserSelected)
+
+
 const [articleId, setArticleId] = useState([])
+
+
 
 
   return (
@@ -24,7 +28,7 @@ const [articleId, setArticleId] = useState([])
       <Routes>
       <Route path='/' element={<Articles articleId={articleId} setArticleId={setArticleId} />} />
       <Route path='/:topics' element={<Articles articleId={articleId} setArticleId={setArticleId} />} />
-      <Route path='/articles/:articleId' element={<Article getUser={getUser} setGetUser={setGetUser} noUserSelected={noUserSelected}/>} />
+      <Route path='/articles/:articleId' element={<Article getUser={getUser} setGetUser={setGetUser} noUserSelected={noUserSelected}  />} />
       <Route path='/*' element={<NotVaildPage />} />
       </Routes> 
 

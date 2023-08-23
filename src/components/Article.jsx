@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom"
 const Article = (props) => {
     const [getArticle, setGetArticle] = useState([])
     const [authors, setAuthors] = useState([])
-    const [authorImg, setAuthorImg] = useState('')
     const {articleId} = useParams()
     const [loading, setLoading] = useState(true); 
     const [commentsList, setCommentsList] = useState([])
@@ -16,15 +15,20 @@ const Article = (props) => {
     const [increaseVoteButton, setIncreaseVoteButton] = useState(false)
     const [decreaseVoteButton, setDecreaseVoteButton] = useState(false)
     
-   
+    
+
     const [textArea, setTextArea] = useState('')
     useEffect(()=> {
         getUsers().then((res) => {
+            
             setAuthors(res.users)
             
-           return getArticlesById(articleId)
+          
+            
+            return getArticlesById(articleId)
         })
         .then((res)=>{
+            
             getAuthorImg()
             setGetArticle(res.article)
             setVotes(res.article.votes)
@@ -41,12 +45,18 @@ const Article = (props) => {
         })
     }, [])
 
+   
+   
+
 function getAuthorImg () {
-    authors.map((author) => {
+    const array = []
+   authors.forEach((author) => {
         if(Object.values(author).includes(getArticle.author)){
-            setAuthorImg(author.avatar_url)  
-        }
+             array.push(author.avatar_url)
+            
+        } else {}
     })
+    return array
 }
 
 function disableButton (author) {
@@ -164,7 +174,8 @@ if(loading){
     return <h2 id="loading">{networkError}</h2>
  }
   else {
-
+    const authorImg = getAuthorImg()
+   
         return <main>
             <section id="article">
             <h2 id="articleTitle">{getArticle.title}</h2>
@@ -175,8 +186,8 @@ if(loading){
             <button disabled={decreaseVoteButton} onClick={handleVoteDecrease} value={'decrease'} id="thumbsDown" >👎</button>
             </div>
             <div id="authorContainer">
-
-            <img id="authorAvatar" src={authorImg}></img>
+                
+            <img id="authorAvatar" src={authorImg[0]}></img>
             <p id="author"> Author: {getArticle.author}</p>
             </div>
             </div>
@@ -189,7 +200,7 @@ if(loading){
             </div>
             <h3 id="commentHeader">Comments</h3>
             <section id="addComments">
-                    <div id="UserContainer">
+                    
                         {
                             props.getUser.username ? <img id="userAvatar" src={props.getUser.avatar_url}></img> : null
                         }
@@ -197,7 +208,7 @@ if(loading){
                             props.getUser.username ?  <p id="username2"> Username: {props.getUser.username}</p> : <p id="noUsername"> Please choose a user to be able to make a comment</p>
                         }
                
-                    </div>
+                    
                 <label id="commentLable" htmlFor="commentArea">Comment Below</label>
                 <textarea value={textArea} onChange={handleComment} id="commentArea"></textarea>
                <button disabled={handleCommentSubmitButtonDisable()} onClick={handleCommentSubmit} className="commentSubmitButton">Submit Comment</button>
